@@ -35,7 +35,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    # Step 5: Get the last commit date and version
+    # Step 5: Grant Execute Permissions to gradlew
+    - name: Grant Execute Permissions
+      run: chmod +x external-repo/gradlew
+
+    # Step 6: Get the last commit date and version
     - name: Get Metadata
       working-directory: external-repo
       run: |
@@ -46,18 +50,18 @@ jobs:
         echo "VERSION=${VERSION}" >> $GITHUB_ENV
         echo "LAST_COMMIT_DATE=${LAST_COMMIT_DATE}" >> $GITHUB_ENV
 
-    # Step 6: Build the APK
+    # Step 7: Build the APK
     - name: Build APK
       working-directory: external-repo
       run: ./gradlew assembleRelease
 
-    # Step 7: Rename the APK
+    # Step 8: Rename the APK
     - name: Rename APK
       working-directory: external-repo
       run: |
         mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/${PRODUCT_NAME}-${VERSION}-${LAST_COMMIT_DATE}.apk
 
-    # Step 8: Upload the APK as an artifact
+    # Step 9: Upload the APK as an artifact
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
