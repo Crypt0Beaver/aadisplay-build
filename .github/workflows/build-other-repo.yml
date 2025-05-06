@@ -27,7 +27,7 @@ jobs:
     # Step 3.2: init gradle on the external-repo
     - name: Init Gradle
       working-directory: external-repo
-      run: gradle init --overwrite 
+      run: echo gradle init --overwrite 
       
     # Step 4: Cache Gradle dependencies
     - name: Cache Gradle dependencies
@@ -59,8 +59,8 @@ jobs:
     - name: Build APK
       working-directory: external-repo
       run: |
-        ./gradlew tasks --all
-        ./gradlew projects 
+        ./gradlew aa-display:tasks --all
+        ./aa-display/gradlew projects 
         ./gradlew properties
         ./gradlew resolvableConfigurations
         ./gradlew build
