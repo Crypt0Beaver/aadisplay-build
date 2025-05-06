@@ -59,7 +59,10 @@ jobs:
     - name: Build APK
       working-directory: external-repo
       run: |
-        ./gradlew tasks
+        ./gradlew tasks --all
+        ./gradlew projects 
+        ./gradlew properties
+        ./gradlew resolvableConfigurations
         ./gradlew build
       #./gradlew assembleRelease
 
