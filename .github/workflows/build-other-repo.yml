@@ -23,7 +23,12 @@ jobs:
       with:
         java-version: 11
         distribution: 'zulu'
-
+        
+    # Step 3.2: init gradle on the external-repo
+    - name: Init Gradle
+      working-directory: external-repo
+      run: ./gradle init
+      
     # Step 4: Cache Gradle dependencies
     - name: Cache Gradle dependencies
       uses: actions/cache@v3
@@ -52,12 +57,12 @@ jobs:
 
     # Step 7: Build the APK
     - name: Build APK
-      working-directory: .
+      working-directory: external-repo
       run: ./gradlew assembleRelease
 
     # Step 8: Rename the APK
     - name: Rename APK
-      working-directory: .
+      working-directory: external-repo
       run: |
         mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/${PRODUCT_NAME}-${VERSION}-${LAST_COMMIT_DATE}.apk
 
@@ -66,4 +71,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: "${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk"
-        path: app/build/outputs/apk/release/${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk
+        path: external-repo/app/build/outputs/apk/release/${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk
