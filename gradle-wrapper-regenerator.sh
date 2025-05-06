@@ -9,6 +9,8 @@ if ! command -v gradle &> /dev/null; then
   exit 1
 fi
 
+# Initiate the Gradle structure
+echo "Initiating Gradle structure..."
 gradle init
 
 # Generate the Gradle wrapper files
