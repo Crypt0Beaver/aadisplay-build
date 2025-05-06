@@ -59,7 +59,7 @@ jobs:
 
     # Step 8: Upload the APK as an artifact
     - name: Upload APK
-      uses: actions/upload-artifact@c6f745b44f5b4d5cd3a7a0d6335c8c2f4b1fc354 
+      uses: actions/upload-artifact@v3
       with:
         name: "${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk"
         path: external-repo/app/build/outputs/apk/release/${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk
