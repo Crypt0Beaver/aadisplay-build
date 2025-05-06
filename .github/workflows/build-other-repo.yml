@@ -1,0 +1,65 @@
+name: Build APK from External Repository
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout your repository (optional, required if you want to track this workflow in your repo)
+    - name: Checkout Your Repository
+      uses: actions/checkout@v3
+
+    # Step 2: Clone the external repository
+    - name: Clone External Repository
+      run: git clone https://github.com/eparla774/AADisplay.git external-repo
+
+    # Step 3: Set up JDK (Java Development Kit)
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: 11
+        distribution: 'zulu'
+
+    # Step 4: Cache Gradle dependencies
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    # Step 5: Get the last commit date and version
+    - name: Get Metadata
+      working-directory: external-repo
+      id: metadata
+      run: |
+        PRODUCT_NAME="AADisplay"
+        VERSION=$(grep 'versionName' app/build.gradle | awk '{print $2}' | sed 's/"//g')
+        LAST_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%Y-%m-%d')
+        echo "PRODUCT_NAME=${PRODUCT_NAME}" >> $GITHUB_ENV
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "LAST_COMMIT_DATE=${LAST_COMMIT_DATE}" >> $GITHUB_ENV
+
+    # Step 6: Build the APK
+    - name: Build APK
+      working-directory: external-repo
+      run: ./gradlew assembleRelease
+
+    # Step 7: Rename the APK
+    - name: Rename APK
+      working-directory: external-repo
+      run: |
+        mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/${PRODUCT_NAME}-${VERSION}-${LAST_COMMIT_DATE}.apk
+
+    # Step 8: Upload the APK as an artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: "${PRODUCT_NAME}-${VERSION}-${LAST_COMMIT_DATE}.apk"
+        path: external-repo/app/build/outputs/apk/release/${PRODUCT_NAME}-${VERSION}-${LAST_COMMIT_DATE}.apk
