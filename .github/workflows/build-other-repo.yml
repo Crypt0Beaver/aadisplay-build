@@ -52,12 +52,12 @@ jobs:
 
     # Step 7: Build the APK
     - name: Build APK
-      working-directory: external-repo
+      working-directory: .
       run: ./gradlew assembleRelease
 
     # Step 8: Rename the APK
     - name: Rename APK
-      working-directory: external-repo
+      working-directory: .
       run: |
         mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/${PRODUCT_NAME}-${VERSION}-${LAST_COMMIT_DATE}.apk
 
@@ -66,4 +66,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: "${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk"
-        path: external-repo/app/build/outputs/apk/release/${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk
+        path: app/build/outputs/apk/release/${{ env.PRODUCT_NAME }}-${{ env.VERSION }}-${{ env.LAST_COMMIT_DATE }}.apk
