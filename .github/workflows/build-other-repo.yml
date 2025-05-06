@@ -58,7 +58,10 @@ jobs:
     # Step 7: Build the APK
     - name: Build APK
       working-directory: external-repo
-      run: ./gradlew assembleRelease
+      run: |
+        ./gradlew tasks
+        ./gradlew build
+      #./gradlew assembleRelease
 
     # Step 8: Rename the APK
     - name: Rename APK
