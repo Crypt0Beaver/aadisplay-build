@@ -9,6 +9,8 @@ if ! command -v gradle &> /dev/null; then
   exit 1
 fi
 
+gradle init
+
 # Generate the Gradle wrapper files
 echo "Generating Gradle wrapper files..."
 gradle wrapper
